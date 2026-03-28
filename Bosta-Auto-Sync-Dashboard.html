@@ -307,7 +307,7 @@ function renderRuns(tab) {
 
     const pageInfo = tab === 'w1'
       ? `<span class="chip chip-blue">صفحة ${run.page}${run.resetPage ? ' ↺ بريك' : ''}</span>`
-      : `<span class="chip chip-yellow">cutoff: ${run.cutoff?.split('T')[0] || '—'}</span>${run.resetCursor ? '<span class="chip chip-gray">↺ reset</span>' : ''}`;
+      : `<span class="chip chip-yellow">cutoff: ${run.cutoff?.split('T')[0] || '—'}</span>${run.cycleComplete ? '<span class="chip chip-gray">↺ بريك</span>' : ''}`;
 
     const fromBosta = tab === 'w1'
       ? `<span class="chip chip-blue">بوسطة: ${(run.totalFromBosta ?? 0).toLocaleString('en-US')}</span>`
