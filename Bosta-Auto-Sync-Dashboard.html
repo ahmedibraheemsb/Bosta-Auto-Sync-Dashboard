@@ -32,43 +32,28 @@
   .topbar-brand { font-size: 13px; color: var(--muted); }
   .topbar-title { font-size: 15px; font-weight: 600; }
   .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--accent); display: inline-block; margin-right: 6px; }
-
   .main { max-width: 1200px; margin: 0 auto; padding: 24px 20px; }
 
-  .card {
-    background: var(--surface); border: 1px solid var(--border);
-    border-radius: 8px; padding: 20px; margin-bottom: 16px;
-  }
+  .card { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 20px; margin-bottom: 16px; }
   .card-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; flex-wrap: wrap; gap: 10px; }
   .card-title { font-size: 12px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: .08em; }
 
-  /* Setup */
-  .field { display: flex; flex-direction: column; gap: 6px; }
-  .field label { font-size: 11px; color: var(--muted); font-weight: 500; text-transform: uppercase; letter-spacing: .06em; }
-  .field input {
-    background: var(--bg); border: 1px solid #d0d0d8; border-radius: 6px;
-    color: var(--text); font-family: var(--sans); font-size: 13px; padding: 8px 10px;
-    outline: none; transition: border-color .15s;
-  }
-  .field input:focus { border-color: var(--accent); }
-
-  /* Buttons */
   .btn {
     display: inline-flex; align-items: center; gap: 7px;
     padding: 8px 16px; border-radius: 6px; font-family: var(--sans);
     font-size: 13px; font-weight: 500; cursor: pointer; border: none;
   }
+  .btn:disabled { opacity: .4; cursor: not-allowed; }
   .btn-primary { background: var(--accent); color: #fff; }
   .btn-primary:hover { opacity: .85; }
   .btn-ghost { background: transparent; border: 1px solid #d0d0d8; color: var(--text); }
   .btn-ghost:hover { border-color: var(--text); }
+  .btn-green { background: var(--green); color: #fff; font-weight: 600; }
+  .btn-green:not(:disabled):hover { opacity: .85; }
+  .btn-sm { padding: 5px 12px; font-size: 12px; }
 
-  /* Stats row */
-  .stats-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; margin-bottom: 20px; }
-  .stat-card {
-    background: var(--bg); border: 1px solid var(--border); border-radius: 7px;
-    padding: 14px 16px;
-  }
+  .stats-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; }
+  .stat-card { background: var(--bg); border: 1px solid var(--border); border-radius: 7px; padding: 14px 16px; }
   .stat-label { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; margin-bottom: 6px; }
   .stat-value { font-family: var(--mono); font-size: 22px; font-weight: 500; }
   .stat-value.green  { color: var(--green); }
@@ -76,67 +61,50 @@
   .stat-value.yellow { color: var(--yellow); }
   .stat-value.blue   { color: var(--blue); }
 
-  /* Worker section tabs */
-  .tabs { display: flex; gap: 4px; margin-bottom: 16px; }
-  .tab {
-    padding: 7px 16px; border-radius: 6px; font-size: 13px; font-weight: 500;
-    cursor: pointer; border: 1px solid var(--border); background: var(--bg); color: var(--muted);
-    transition: all .12s;
-  }
+  .tabs { display: flex; gap: 4px; }
+  .tab { padding: 7px 16px; border-radius: 6px; font-size: 13px; font-weight: 500; cursor: pointer; border: 1px solid var(--border); background: var(--bg); color: var(--muted); transition: all .12s; }
   .tab.active { background: var(--text); color: #fff; border-color: var(--text); }
 
-  /* Run list */
   .run-list { display: flex; flex-direction: column; gap: 8px; }
-  .run-item {
-    border: 1px solid var(--border); border-radius: 7px; padding: 14px 16px;
-    cursor: pointer; transition: border-color .12s;
-  }
+  .run-item { border: 1px solid var(--border); border-radius: 7px; padding: 12px 16px; transition: border-color .12s; }
   .run-item:hover { border-color: #b0b0be; }
   .run-item.has-errors { border-color: rgba(232,55,42,.3); background: rgba(232,55,42,.02); }
   .run-item.expanded { border-color: var(--blue); }
 
-  .run-header { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+  .run-header { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; cursor: pointer; }
+  .run-checkbox { width: 15px; height: 15px; accent-color: var(--accent); cursor: pointer; flex-shrink: 0; }
   .run-time { font-family: var(--mono); font-size: 12px; color: var(--muted); }
-  .run-chips { display: flex; gap: 6px; flex-wrap: wrap; margin-right: auto; }
+  .run-chips { display: flex; gap: 5px; flex-wrap: wrap; margin-right: auto; }
 
-  .chip {
-    display: inline-flex; align-items: center; gap: 4px;
-    padding: 3px 8px; border-radius: 4px; font-size: 11px; font-family: var(--mono); font-weight: 500;
-  }
+  .chip { display: inline-flex; align-items: center; gap: 4px; padding: 3px 8px; border-radius: 4px; font-size: 11px; font-family: var(--mono); font-weight: 500; }
   .chip-green  { background: rgba(22,163,74,.1);  color: #15803d; }
   .chip-red    { background: rgba(232,55,42,.1);  color: #c0392b; }
   .chip-blue   { background: rgba(37,99,235,.1);  color: #1d4ed8; }
   .chip-gray   { background: rgba(128,128,143,.1);color: var(--muted); }
   .chip-yellow { background: rgba(217,119,6,.1);  color: #b45309; }
 
-  .run-detail { margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--border); display: none; }
+  .run-detail { margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--border); display: none; }
   .run-detail.open { display: block; }
-  .detail-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 8px; margin-bottom: 10px; }
+  .detail-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 8px; margin-bottom: 12px; }
   .detail-item { font-size: 12px; }
   .detail-item span { font-family: var(--mono); color: var(--blue); }
 
-  .error-list { display: flex; flex-direction: column; gap: 4px; margin-top: 8px; }
-  .error-row {
-    padding: 6px 10px; border-radius: 5px; font-size: 12px; font-family: var(--mono);
-    background: rgba(232,55,42,.07); color: #c0392b;
-  }
+  .orders-section { margin-top: 10px; }
+  .orders-label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: .06em; margin-bottom: 6px; }
+  .orders-label.ok  { color: var(--green); }
+  .orders-label.err { color: var(--accent); }
+  .orders-grid { display: flex; flex-wrap: wrap; gap: 5px; }
+  .order-tag { font-family: var(--mono); font-size: 11px; padding: 2px 7px; border-radius: 4px; }
+  .order-tag.ok  { background: rgba(22,163,74,.08);  color: #15803d; }
+  .order-tag.err { background: rgba(232,55,42,.08);  color: #c0392b; cursor: help; }
 
-  /* Empty */
-  .empty { text-align: center; color: var(--muted); padding: 40px; font-size: 13px; }
-
-  /* Status bar */
-  .status-bar {
-    font-size: 12px; color: var(--muted); padding: 9px 12px;
-    background: var(--bg); border: 1px solid var(--border); border-radius: 6px;
-    font-family: var(--mono); display: flex; align-items: center; gap: 8px;
-  }
+  .status-bar { font-size: 12px; color: var(--muted); padding: 9px 12px; background: var(--bg); border: 1px solid var(--border); border-radius: 6px; font-family: var(--mono); display: flex; align-items: center; gap: 8px; }
   .status-bar.error   { border-color: var(--accent); color: #c0392b; }
   .status-bar.success { border-color: var(--green);  color: #15803d; }
   @keyframes spin { to { transform: rotate(360deg); } }
   .spinner { width: 12px; height: 12px; border: 2px solid #d0d0d8; border-top-color: var(--accent); border-radius: 50%; animation: spin .6s linear infinite; }
-
-  .refresh-row { display: flex; align-items: center; gap: 10px; }
   .last-fetch { font-size: 11px; color: var(--muted); font-family: var(--mono); }
+  .empty { text-align: center; color: var(--muted); padding: 40px; font-size: 13px; }
 </style>
 </head>
 <body>
@@ -149,8 +117,8 @@
 
 <div class="main">
 
-  <!-- Setup -->
-  <div class="card" style="padding:14px 20px">
+  <!-- Top bar -->
+  <div class="card" style="padding:14px 20px; margin-bottom:16px">
     <div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap">
       <button class="btn btn-primary" id="btnFetch">
         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.2"/></svg>
@@ -161,22 +129,17 @@
     </div>
   </div>
 
-  <!-- Summary stats -->
-  <div id="statsSection" style="display:none">
-    <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:16px">
-
-      <!-- Worker 1 stats -->
+  <!-- Stats -->
+  <div id="statsSection" style="display:none; margin-bottom:16px">
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px">
       <div class="card">
         <div class="card-title" style="margin-bottom:12px">Worker 1 — النشطين (آخر run)</div>
         <div class="stats-row" id="w1Stats"></div>
       </div>
-
-      <!-- Worker 2 stats -->
       <div class="card">
         <div class="card-title" style="margin-bottom:12px">Worker 2 — المتأخرين (آخر run)</div>
         <div class="stats-row" id="w2Stats"></div>
       </div>
-
     </div>
   </div>
 
@@ -184,9 +147,18 @@
   <div class="card" id="historyCard" style="display:none">
     <div class="card-header">
       <div class="card-title">سجل الـ Runs</div>
-      <div class="tabs">
-        <div class="tab active" id="tabW1" onclick="switchTab('w1')">Worker 1 — النشطين</div>
-        <div class="tab" id="tabW2" onclick="switchTab('w2')">Worker 2 — المتأخرين</div>
+      <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap">
+        <div class="tabs">
+          <div class="tab active" id="tabW1" onclick="switchTab('w1')">Worker 1 — النشطين</div>
+          <div class="tab" id="tabW2" onclick="switchTab('w2')">Worker 2 — المتأخرين</div>
+        </div>
+        <button class="btn btn-green btn-sm" id="btnExport" disabled>
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Export المحدد
+        </button>
+        <button class="btn btn-ghost btn-sm" id="btnSelectAllRuns">تحديد الكل</button>
+        <button class="btn btn-ghost btn-sm" id="btnDeselectAllRuns">إلغاء الكل</button>
+        <span id="selectedRunsCount" style="font-size:12px;color:var(--muted);font-family:var(--mono)">0 محدد</span>
       </div>
     </div>
     <div class="run-list" id="runList"></div>
@@ -195,8 +167,12 @@
 </div>
 
 <script>
-let allData = { w1: [], w2: [] };
-let activeTab = 'w1';
+const W1_URL = "https://bosta-auto-sync-active-orders-worker.ecommoda24.workers.dev";
+const W2_URL = "https://bosta-auto-sync-final-orders-worker.ecommoda24.workers.dev";
+
+let allData    = { w1: [], w2: [] };
+let activeTab  = 'w1';
+let selectedRuns = new Set();
 
 function setStatus(msg, type = '') {
   const el = document.getElementById('fetchStatus');
@@ -206,158 +182,207 @@ function setStatus(msg, type = '') {
 
 function fmtDate(iso) {
   if (!iso) return '—';
-  const d = new Date(iso); return d.toLocaleDateString('en-GB', { day:'2-digit', month:'2-digit', year:'numeric' }) + ' ' + d.toLocaleTimeString('en-US', { hour:'2-digit', minute:'2-digit', second:'2-digit', hour12: false });
+  const d = new Date(iso);
+  return d.toLocaleDateString('en-GB', { day:'2-digit', month:'2-digit', year:'numeric' })
+    + ' ' + d.toLocaleTimeString('en-US', { hour:'2-digit', minute:'2-digit', second:'2-digit', hour12: false });
 }
 
 function fmtDuration(ms) {
-  if (!ms) return '—';
+  if (!ms && ms !== 0) return '—';
   if (ms < 1000) return `${ms}ms`;
-  return `${(ms/1000).toFixed(1)}s`.replace(/[٠-٩]/g, d => '0123456789'['٠١٢٣٤٥٦٧٨٩'.indexOf(d)]);
+  return `${(ms/1000).toFixed(1)}s`;
 }
 
-// ── Hardcoded Worker URLs ─────────────────────────────────────────────────────
-const W1_URL = "https://bosta-auto-sync-active-orders-worker.ecommoda24.workers.dev";
-const W2_URL = "https://bosta-auto-sync-final-orders-worker.ecommoda24.workers.dev";
+function n(v) { return (v ?? 0).toLocaleString('en-US'); }
 
-// ── Fetch data ────────────────────────────────────────────────────────────────
+// ── Fetch ─────────────────────────────────────────────────────────────────────
 async function fetchData() {
   setStatus('جاري التحديث...', 'loading');
-
   try {
-    const [w1Res, w2Res] = await Promise.all([
+    const [r1, r2] = await Promise.all([
       fetch(`${W1_URL}/logs?key=w1_runs`),
       fetch(`${W2_URL}/logs?key=w2_runs`),
     ]);
+    allData.w1 = r1.ok ? (await r1.json()).runs || [] : [];
+    allData.w2 = r2.ok ? (await r2.json()).runs || [] : [];
 
-    allData.w1 = w1Res.ok ? (await w1Res.json()).runs || [] : [];
-    allData.w2 = w2Res.ok ? (await w2Res.json()).runs || [] : [];
-
+    selectedRuns.clear();
     renderStats();
     renderRuns(activeTab);
-
     document.getElementById('statsSection').style.display = '';
     document.getElementById('historyCard').style.display  = '';
     document.getElementById('lastFetch').textContent = `آخر تحديث: ${fmtDate(new Date().toISOString())}`;
-    setStatus(`تم التحديث — ${allData.w1.length.toLocaleString('en-US')} run لـ W1، ${allData.w2.length.toLocaleString('en-US')} run لـ W2`, 'success');
+    setStatus('تم التحديث', 'success');
   } catch (err) {
     setStatus(`خطأ: ${err.message}`, 'error');
   }
 }
 
-// ── Stats cards ───────────────────────────────────────────────────────────────
+// ── Stats ─────────────────────────────────────────────────────────────────────
 function renderStats() {
   renderWorkerStats('w1Stats', allData.w1[0], 'active');
   renderWorkerStats('w2Stats', allData.w2[0], 'stale');
 }
 
-function renderWorkerStats(containerId, run, type) {
-  const el = document.getElementById(containerId);
+function renderWorkerStats(id, run, type) {
+  const el = document.getElementById(id);
   if (!run) { el.innerHTML = '<div class="empty">لا يوجد runs بعد</div>'; return; }
-
-  const processed = type === 'active' ? run.processed : run.processed;
-  const staleInfo = type === 'stale' ? `<div class="stat-card"><div class="stat-label">Stale Found</div><div class="stat-value yellow">${(run.staleFound ?? '—').toLocaleString?.() ?? run.staleFound ?? '—'}</div></div>` : `<div class="stat-card"><div class="stat-label">من بوسطة</div><div class="stat-value blue">${(run.totalFromBosta != null ? run.totalFromBosta.toLocaleString('en-US') : '—')}</div></div>`;
-
+  const extra = type === 'active'
+    ? `<div class="stat-card"><div class="stat-label">من بوسطة</div><div class="stat-value blue">${n(run.totalFromBosta)}</div></div>`
+    : `<div class="stat-card"><div class="stat-label">Stale Found</div><div class="stat-value yellow">${n(run.staleFound)}</div></div>`;
   el.innerHTML = `
-    ${staleInfo}
-    <div class="stat-card"><div class="stat-label">نجح</div><div class="stat-value green">${(run.succeeded ?? 0).toLocaleString('en-US')}</div></div>
-    <div class="stat-card"><div class="stat-label">فشل</div><div class="stat-value ${run.failed > 0 ? 'red' : ''}">${(run.failed ?? 0).toLocaleString('en-US')}</div></div>
+    ${extra}
+    <div class="stat-card"><div class="stat-label">نجح</div><div class="stat-value green">${n(run.succeeded)}</div></div>
+    <div class="stat-card"><div class="stat-label">فشل</div><div class="stat-value ${run.failed > 0 ? 'red' : ''}">${n(run.failed)}</div></div>
     <div class="stat-card"><div class="stat-label">المدة</div><div class="stat-value">${fmtDuration(run.duration)}</div></div>
   `;
 }
 
-// ── Run list ──────────────────────────────────────────────────────────────────
+// ── Runs ──────────────────────────────────────────────────────────────────────
 function switchTab(tab) {
   activeTab = tab;
+  selectedRuns.clear();
   document.getElementById('tabW1').classList.toggle('active', tab === 'w1');
   document.getElementById('tabW2').classList.toggle('active', tab === 'w2');
   renderRuns(tab);
+  updateExportBtn();
 }
 
 function renderRuns(tab) {
   const runs = allData[tab];
   const el   = document.getElementById('runList');
-
-  if (!runs.length) {
-    el.innerHTML = '<div class="empty">لا يوجد runs بعد</div>';
-    return;
-  }
+  if (!runs.length) { el.innerHTML = '<div class="empty">لا يوجد runs بعد</div>'; return; }
 
   el.innerHTML = '';
   runs.forEach((run, idx) => {
-    const isSkipped  = run.skipped === true;
-    const hasErrors  = !isSkipped && run.errors?.length > 0;
-    const div        = document.createElement('div');
-    div.className    = `run-item ${hasErrors ? 'has-errors' : ''} ${isSkipped ? 'skipped-run' : ''}`;
-    div.dataset.idx  = idx;
+    const hasErrors = run.errors?.length > 0;
+    const div       = document.createElement('div');
+    div.className   = `run-item ${hasErrors ? 'has-errors' : ''}`;
 
-    if (isSkipped) {
-      div.style.opacity = '0.5';
-      div.innerHTML = `
-        <div class="run-header">
-          <span class="run-time">${fmtDate(run.time)}</span>
-          <div class="run-chips">
-            <span class="chip chip-gray">⏸ بريك</span>
-            <span class="chip chip-gray">حتى: ${fmtDate(run.restUntil)}</span>
-          </div>
-        </div>
-      `;
-      el.appendChild(div);
-      return;
-    }
-
-    const pageInfo = tab === 'w1'
+    // Page / cutoff chip
+    const infoChip = tab === 'w1'
       ? `<span class="chip chip-blue">صفحة ${run.page}${run.resetPage ? ' ↺ بريك' : ''}</span>`
       : `<span class="chip chip-yellow">cutoff: ${run.cutoff?.split('T')[0] || '—'}</span>${run.cycleComplete ? '<span class="chip chip-gray">↺ بريك</span>' : ''}`;
 
-    const fromBosta = tab === 'w1'
-      ? `<span class="chip chip-blue">بوسطة: ${(run.totalFromBosta ?? 0).toLocaleString('en-US')}</span>`
-      : `<span class="chip chip-yellow">stale: ${(run.staleFound ?? 0).toLocaleString('en-US')}</span><span class="chip chip-blue">معالجة: ${(run.staleProcessed ?? run.staleFound ?? 0).toLocaleString('en-US')}</span>`;
+    const fromChip = tab === 'w1'
+      ? `<span class="chip chip-blue">بوسطة: ${n(run.totalFromBosta)}</span>`
+      : `<span class="chip chip-yellow">stale: ${n(run.staleFound)}</span>`;
 
     div.innerHTML = `
       <div class="run-header">
+        <input type="checkbox" class="run-checkbox" data-idx="${idx}" />
         <span class="run-time">${fmtDate(run.time)}</span>
         <div class="run-chips">
-          ${pageInfo}
-          ${fromBosta}
-          <span class="chip chip-green">✓ ${(run.succeeded ?? 0).toLocaleString('en-US')}</span>
-          ${run.failed > 0 ? `<span class="chip chip-red">✗ ${run.failed.toLocaleString('en-US')}</span>` : ''}
-          ${run.restUntil ? `<span class="chip chip-yellow">بريك حتى: ${fmtDate(run.restUntil)}</span>` : ''}
+          ${infoChip}
+          ${fromChip}
+          <span class="chip chip-green">✓ ${n(run.succeeded)}</span>
+          ${run.failed > 0 ? `<span class="chip chip-red">✗ ${n(run.failed)}</span>` : ''}
+          ${run.restUntil && run.cycleComplete ? `<span class="chip chip-yellow">حتى: ${fmtDate(run.restUntil)}</span>` : ''}
           <span class="chip chip-gray">${fmtDuration(run.duration)}</span>
         </div>
       </div>
       <div class="run-detail" id="detail_${idx}">
         <div class="detail-grid">
           <div class="detail-item">الوقت: <span>${fmtDate(run.time)}</span></div>
-          <div class="detail-item">المعالجة: <span>${(run.processed ?? 0).toLocaleString('en-US')}</span></div>
-          <div class="detail-item">نجح: <span>${(run.succeeded ?? 0).toLocaleString('en-US')}</span></div>
-          <div class="detail-item">فشل: <span>${(run.failed ?? 0).toLocaleString('en-US')}</span></div>
+          <div class="detail-item">المعالجة: <span>${n(run.processed)}</span></div>
+          <div class="detail-item">نجح: <span>${n(run.succeeded)}</span></div>
+          <div class="detail-item">فشل: <span>${n(run.failed)}</span></div>
           <div class="detail-item">المدة: <span>${fmtDuration(run.duration)}</span></div>
-          ${tab === 'w1' ? `<div class="detail-item">رقم الصفحة: <span>${run.page.toLocaleString('en-US')}</span></div>` : `<div class="detail-item">Stale Found: <span>${(run.staleFound ?? 0).toLocaleString('en-US')}</span></div>`}
-          ${run.restUntil ? `<div class="detail-item">بريك حتى: <span>${fmtDate(run.restUntil)}</span></div>` : ''}
+          ${tab === 'w1' ? `<div class="detail-item">صفحة: <span>${(run.page||0).toLocaleString('en-US')}</span></div>` : `<div class="detail-item">Stale: <span>${n(run.staleFound)}</span></div>`}
         </div>
+        ${run.succeededOrders?.length ? `
+          <div class="orders-section">
+            <div class="orders-label ok">✓ الناجحين (${n(run.succeededOrders.length)})</div>
+            <div class="orders-grid">${run.succeededOrders.map(o => `<span class="order-tag ok">${o}</span>`).join('')}</div>
+          </div>` : ''}
         ${hasErrors ? `
-          <div style="font-size:11px;color:var(--accent);font-weight:600;margin-bottom:6px">أخطاء (${run.errors.length.toLocaleString('en-US')}):</div>
-          <div class="error-list">
-            ${run.errors.map(e => `<div class="error-row">✗ ${e.order} — ${e.error}</div>`).join('')}
-          </div>
-        ` : '<div style="font-size:12px;color:var(--green)">✓ بدون أخطاء</div>'}
+          <div class="orders-section">
+            <div class="orders-label err">✗ الأخطاء (${n(run.errors.length)})</div>
+            <div class="orders-grid">${run.errors.map(e => `<span class="order-tag err" title="${e.error}">${e.order}</span>`).join('')}</div>
+          </div>` : (!run.succeededOrders?.length ? '<div style="font-size:12px;color:var(--green);margin-top:8px">✓ بدون أخطاء</div>' : '')}
       </div>
     `;
 
-    div.addEventListener('click', () => {
+    // Checkbox
+    const cb = div.querySelector('.run-checkbox');
+    cb.addEventListener('click', e => e.stopPropagation());
+    cb.addEventListener('change', () => {
+      if (cb.checked) selectedRuns.add(idx); else selectedRuns.delete(idx);
+      updateExportBtn();
+    });
+
+    // Expand on row click (not checkbox)
+    div.querySelector('.run-header').addEventListener('click', e => {
+      if (e.target.classList.contains('run-checkbox')) return;
       const detail = document.getElementById(`detail_${idx}`);
-      const isOpen = detail.classList.contains('open');
-      detail.classList.toggle('open', !isOpen);
-      div.classList.toggle('expanded', !isOpen);
+      detail.classList.toggle('open');
+      div.classList.toggle('expanded', detail.classList.contains('open'));
     });
 
     el.appendChild(div);
   });
 }
 
+function updateExportBtn() {
+  const n = selectedRuns.size;
+  document.getElementById('selectedRunsCount').textContent = `${n} محدد`;
+  document.getElementById('btnExport').disabled = n === 0;
+}
+
+// ── Select All / Deselect ─────────────────────────────────────────────────────
+document.getElementById('btnSelectAllRuns').addEventListener('click', () => {
+  const runs = allData[activeTab];
+  selectedRuns = new Set(runs.map((_, i) => i));
+  document.querySelectorAll('.run-checkbox').forEach(cb => cb.checked = true);
+  updateExportBtn();
+});
+
+document.getElementById('btnDeselectAllRuns').addEventListener('click', () => {
+  selectedRuns.clear();
+  document.querySelectorAll('.run-checkbox').forEach(cb => cb.checked = false);
+  updateExportBtn();
+});
+
+// ── Export Excel ──────────────────────────────────────────────────────────────
+document.getElementById('btnExport').addEventListener('click', () => {
+  const runs = allData[activeTab];
+  const rows = [];
+
+  rows.push(['الوقت', 'Worker', 'نجح', 'فشل', 'المدة (ms)',
+    activeTab === 'w1' ? 'صفحة' : 'Stale Found',
+    'الأوردرات الناجحة', 'الأخطاء']);
+
+  [...selectedRuns].sort((a,b) => a-b).forEach(idx => {
+    const r = runs[idx];
+    if (!r) return;
+    rows.push([
+      fmtDate(r.time),
+      r.worker,
+      r.succeeded ?? 0,
+      r.failed ?? 0,
+      r.duration ?? 0,
+      activeTab === 'w1' ? (r.page ?? '') : (r.staleFound ?? ''),
+      (r.succeededOrders || []).join(', '),
+      (r.errors || []).map(e => `${e.order}: ${e.error}`).join(' | '),
+    ]);
+  });
+
+  // Build CSV (Excel-compatible UTF-8 BOM)
+  const csv = '\uFEFF' + rows.map(row =>
+    row.map(cell => `"${String(cell).replace(/"/g, '""')}"`).join(',')
+  ).join('\n');
+
+  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+  const url  = URL.createObjectURL(blob);
+  const a    = document.createElement('a');
+  a.href     = url;
+  a.download = `bosta-sync-${activeTab}-${new Date().toISOString().split('T')[0]}.csv`;
+  a.click();
+  URL.revokeObjectURL(url);
+});
+
 // ── Init ──────────────────────────────────────────────────────────────────────
 document.getElementById('btnFetch').addEventListener('click', fetchData);
-// Auto-fetch on load
 fetchData();
 </script>
 </body>
