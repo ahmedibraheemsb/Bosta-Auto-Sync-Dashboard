@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Bosta Auto Sync — Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --bg:      #f4f4f6;
+    --surface: #ffffff;
+    --border:  #e2e2e8;
+    --text:    #1a1a22;
+    --muted:   #80808f;
+    --accent:  #e8372a;
+    --green:   #16a34a;
+    --yellow:  #d97706;
+    --blue:    #2563eb;
+    --mono:    'JetBrains Mono', monospace;
+    --sans:    'IBM Plex Sans Arabic', sans-serif;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { background: var(--bg); color: var(--text); font-family: var(--sans); font-size: 14px; min-height: 100vh; }
+
+  .topbar {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 14px 24px; border-bottom: 1px solid var(--border);
+    background: var(--surface); position: sticky; top: 0; z-index: 100;
+  }
+  .topbar-brand { font-size: 13px; color: var(--muted); }
+  .topbar-title { font-size: 15px; font-weight: 600; }
+  .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--accent); display: inline-block; margin-right: 6px; }
+
+  .main { max-width: 1200px; margin: 0 auto; padding: 24px 20px; }
+
+  .card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 8px; padding: 20px; margin-bottom: 16px;
+  }
+  .card-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; flex-wrap: wrap; gap: 10px; }
+  .card-title { font-size: 12px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: .08em; }
+
+  /* Setup */
+  .field { display: flex; flex-direction: column; gap: 6px; }
+  .field label { font-size: 11px; color: var(--muted); font-weight: 500; text-transform: uppercase; letter-spacing: .06em; }
+  .field input {
+    background: var(--bg); border: 1px solid #d0d0d8; border-radius: 6px;
+    color: var(--text); font-family: var(--sans); font-size: 13px; padding: 8px 10px;
+    outline: none; transition: border-color .15s;
+  }
+  .field input:focus { border-color: var(--accent); }
+
+  /* Buttons */
+  .btn {
+    display: inline-flex; align-items: center; gap: 7px;
+    padding: 8px 16px; border-radius: 6px; font-family: var(--sans);
+    font-size: 13px; font-weight: 500; cursor: pointer; border: none;
+  }
+  .btn-primary { background: var(--accent); color: #fff; }
+  .btn-primary:hover { opacity: .85; }
+  .btn-ghost { background: transparent; border: 1px solid #d0d0d8; color: var(--text); }
+  .btn-ghost:hover { border-color: var(--text); }
+
+  /* Stats row */
+  .stats-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; margin-bottom: 20px; }
+  .stat-card {
+    background: var(--bg); border: 1px solid var(--border); border-radius: 7px;
+    padding: 14px 16px;
+  }
+  .stat-label { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; margin-bottom: 6px; }
+  .stat-value { font-family: var(--mono); font-size: 22px; font-weight: 500; }
+  .stat-value.green  { color: var(--green); }
+  .stat-value.red    { color: var(--accent); }
+  .stat-value.yellow { color: var(--yellow); }
+  .stat-value.blue   { color: var(--blue); }
+
+  /* Worker section tabs */
+  .tabs { display: flex; gap: 4px; margin-bottom: 16px; }
+  .tab {
+    padding: 7px 16px; border-radius: 6px; font-size: 13px; font-weight: 500;
+    cursor: pointer; border: 1px solid var(--border); background: var(--bg); color: var(--muted);
+    transition: all .12s;
+  }
+  .tab.active { background: var(--text); color: #fff; border-color: var(--text); }
+
+  /* Run list */
+  .run-list { display: flex; flex-direction: column; gap: 8px; }
+  .run-item {
+    border: 1px solid var(--border); border-radius: 7px; padding: 14px 16px;
+    cursor: pointer; transition: border-color .12s;
+  }
+  .run-item:hover { border-color: #b0b0be; }
+  .run-item.has-errors { border-color: rgba(232,55,42,.3); background: rgba(232,55,42,.02); }
+  .run-item.expanded { border-color: var(--blue); }
+
+  .run-header { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+  .run-time { font-family: var(--mono); font-size: 12px; color: var(--muted); }
+  .run-chips { display: flex; gap: 6px; flex-wrap: wrap; margin-right: auto; }
+
+  .chip {
+    display: inline-flex; align-items: center; gap: 4px;
+    padding: 3px 8px; border-radius: 4px; font-size: 11px; font-family: var(--mono); font-weight: 500;
+  }
+  .chip-green  { background: rgba(22,163,74,.1);  color: #15803d; }
+  .chip-red    { background: rgba(232,55,42,.1);  color: #c0392b; }
+  .chip-blue   { background: rgba(37,99,235,.1);  color: #1d4ed8; }
+  .chip-gray   { background: rgba(128,128,143,.1);color: var(--muted); }
+  .chip-yellow { background: rgba(217,119,6,.1);  color: #b45309; }
+
+  .run-detail { margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--border); display: none; }
+  .run-detail.open { display: block; }
+  .detail-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 8px; margin-bottom: 10px; }
+  .detail-item { font-size: 12px; }
+  .detail-item span { font-family: var(--mono); color: var(--blue); }
+
+  .error-list { display: flex; flex-direction: column; gap: 4px; margin-top: 8px; }
+  .error-row {
+    padding: 6px 10px; border-radius: 5px; font-size: 12px; font-family: var(--mono);
+    background: rgba(232,55,42,.07); color: #c0392b;
+  }
+
+  /* Empty */
+  .empty { text-align: center; color: var(--muted); padding: 40px; font-size: 13px; }
+
+  /* Status bar */
+  .status-bar {
+    font-size: 12px; color: var(--muted); padding: 9px 12px;
+    background: var(--bg); border: 1px solid var(--border); border-radius: 6px;
+    font-family: var(--mono); display: flex; align-items: center; gap: 8px;
+  }
+  .status-bar.error   { border-color: var(--accent); color: #c0392b; }
+  .status-bar.success { border-color: var(--green);  color: #15803d; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .spinner { width: 12px; height: 12px; border: 2px solid #d0d0d8; border-top-color: var(--accent); border-radius: 50%; animation: spin .6s linear infinite; }
+
+  .refresh-row { display: flex; align-items: center; gap: 10px; }
+  .last-fetch { font-size: 11px; color: var(--muted); font-family: var(--mono); }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-brand">EcomModa</div>
+  <div class="topbar-title"><span class="dot"></span>Bosta Auto Sync — Dashboard</div>
+  <div style="width:80px"></div>
+</div>
+
+<div class="main">
+
+  <!-- Setup -->
+  <div class="card">
+    <div class="card-title" style="margin-bottom:12px">إعداد</div>
+    <div style="display:flex; gap:12px; align-items:flex-end; flex-wrap:wrap">
+      <div class="field" style="flex:1; min-width:260px">
+        <label>Worker URL (أي من الاتنين)</label>
+        <input id="workerUrl" type="url" />
+      </div>
+      <button class="btn btn-primary" id="btnFetch">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.2"/></svg>
+        تحديث
+      </button>
+      <div id="fetchStatus" class="status-bar">في انتظار التحديث...</div>
+      <span class="last-fetch" id="lastFetch"></span>
+    </div>
+  </div>
+
+  <!-- Summary stats -->
+  <div id="statsSection" style="display:none">
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:16px">
+
+      <!-- Worker 1 stats -->
+      <div class="card">
+        <div class="card-title" style="margin-bottom:12px">Worker 1 — النشطين (آخر run)</div>
+        <div class="stats-row" id="w1Stats"></div>
+      </div>
+
+      <!-- Worker 2 stats -->
+      <div class="card">
+        <div class="card-title" style="margin-bottom:12px">Worker 2 — المتأخرين (آخر run)</div>
+        <div class="stats-row" id="w2Stats"></div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Run history -->
+  <div class="card" id="historyCard" style="display:none">
+    <div class="card-header">
+      <div class="card-title">سجل الـ Runs</div>
+      <div class="tabs">
+        <div class="tab active" id="tabW1" onclick="switchTab('w1')">Worker 1 — النشطين</div>
+        <div class="tab" id="tabW2" onclick="switchTab('w2')">Worker 2 — المتأخرين</div>
+      </div>
+    </div>
+    <div class="run-list" id="runList"></div>
+  </div>
+
+</div>
+
+<script>
+let allData = { w1: [], w2: [] };
+let activeTab = 'w1';
+
+function workerUrl() { return document.getElementById('workerUrl').value.trim().replace(/\/$/, ''); }
+
+function setStatus(msg, type = '') {
+  const el = document.getElementById('fetchStatus');
+  el.className = 'status-bar' + (type ? ' ' + type : '');
+  el.innerHTML = type === 'loading' ? `<div class="spinner"></div><span>${msg}</span>` : msg;
+}
+
+function fmtDate(iso) {
+  if (!iso) return '—';
+  return new Date(iso).toLocaleString('ar-EG', { day:'2-digit', month:'2-digit', year:'numeric', hour:'2-digit', minute:'2-digit', second:'2-digit' });
+}
+
+function fmtDuration(ms) {
+  if (!ms) return '—';
+  if (ms < 1000) return `${ms}ms`;
+  return `${(ms/1000).toFixed(1)}s`;
+}
+
+// ── Fetch data ────────────────────────────────────────────────────────────────
+async function fetchData() {
+  const url = workerUrl();
+  if (!url) { setStatus('أدخل Worker URL أولاً', 'error'); return; }
+
+  setStatus('جاري التحديث...', 'loading');
+
+  try {
+    const [w1Res, w2Res] = await Promise.all([
+      fetch(`${url}/logs?key=w1_runs`),
+      fetch(`${url}/logs?key=w2_runs`),
+    ]);
+
+    allData.w1 = w1Res.ok ? (await w1Res.json()).runs || [] : [];
+    allData.w2 = w2Res.ok ? (await w2Res.json()).runs || [] : [];
+
+    renderStats();
+    renderRuns(activeTab);
+
+    document.getElementById('statsSection').style.display = '';
+    document.getElementById('historyCard').style.display  = '';
+    document.getElementById('lastFetch').textContent = `آخر تحديث: ${fmtDate(new Date().toISOString())}`;
+    setStatus(`تم التحديث — ${allData.w1.length} run لـ W1، ${allData.w2.length} run لـ W2`, 'success');
+  } catch (err) {
+    setStatus(`خطأ: ${err.message}`, 'error');
+  }
+}
+
+// ── Stats cards ───────────────────────────────────────────────────────────────
+function renderStats() {
+  renderWorkerStats('w1Stats', allData.w1[0], 'active');
+  renderWorkerStats('w2Stats', allData.w2[0], 'stale');
+}
+
+function renderWorkerStats(containerId, run, type) {
+  const el = document.getElementById(containerId);
+  if (!run) { el.innerHTML = '<div class="empty">لا يوجد runs بعد</div>'; return; }
+
+  const processed = type === 'active' ? run.processed : run.processed;
+  const staleInfo = type === 'stale' ? `<div class="stat-card"><div class="stat-label">Stale Found</div><div class="stat-value yellow">${run.staleFound ?? '—'}</div></div>` : `<div class="stat-card"><div class="stat-label">من بوسطة</div><div class="stat-value blue">${run.totalFromBosta ?? '—'}</div></div>`;
+
+  el.innerHTML = `
+    ${staleInfo}
+    <div class="stat-card"><div class="stat-label">نجح</div><div class="stat-value green">${run.succeeded ?? 0}</div></div>
+    <div class="stat-card"><div class="stat-label">فشل</div><div class="stat-value ${run.failed > 0 ? 'red' : ''}">${run.failed ?? 0}</div></div>
+    <div class="stat-card"><div class="stat-label">المدة</div><div class="stat-value">${fmtDuration(run.duration)}</div></div>
+  `;
+}
+
+// ── Run list ──────────────────────────────────────────────────────────────────
+function switchTab(tab) {
+  activeTab = tab;
+  document.getElementById('tabW1').classList.toggle('active', tab === 'w1');
+  document.getElementById('tabW2').classList.toggle('active', tab === 'w2');
+  renderRuns(tab);
+}
+
+function renderRuns(tab) {
+  const runs = allData[tab];
+  const el   = document.getElementById('runList');
+
+  if (!runs.length) {
+    el.innerHTML = '<div class="empty">لا يوجد runs بعد</div>';
+    return;
+  }
+
+  el.innerHTML = '';
+  runs.forEach((run, idx) => {
+    const hasErrors  = run.errors?.length > 0;
+    const div        = document.createElement('div');
+    div.className    = `run-item ${hasErrors ? 'has-errors' : ''}`;
+    div.dataset.idx  = idx;
+
+    const pageInfo = tab === 'w1'
+      ? `<span class="chip chip-blue">صفحة ${run.page}${run.resetPage ? ' ↺' : ''}</span>`
+      : `<span class="chip chip-yellow">cutoff: ${run.cutoff?.split('T')[0] || '—'}</span>${run.resetCursor ? '<span class="chip chip-gray">↺ reset</span>' : ''}`;
+
+    const fromBosta = tab === 'w1'
+      ? `<span class="chip chip-blue">بوسطة: ${run.totalFromBosta ?? 0}</span>`
+      : `<span class="chip chip-yellow">stale: ${run.staleFound ?? 0}</span>`;
+
+    div.innerHTML = `
+      <div class="run-header">
+        <span class="run-time">${fmtDate(run.time)}</span>
+        <div class="run-chips">
+          ${pageInfo}
+          ${fromBosta}
+          <span class="chip chip-green">✓ ${run.succeeded ?? 0}</span>
+          ${run.failed > 0 ? `<span class="chip chip-red">✗ ${run.failed}</span>` : ''}
+          <span class="chip chip-gray">${fmtDuration(run.duration)}</span>
+        </div>
+      </div>
+      <div class="run-detail" id="detail_${idx}">
+        <div class="detail-grid">
+          <div class="detail-item">الوقت: <span>${fmtDate(run.time)}</span></div>
+          <div class="detail-item">المعالجة: <span>${run.processed ?? 0}</span></div>
+          <div class="detail-item">نجح: <span>${run.succeeded ?? 0}</span></div>
+          <div class="detail-item">فشل: <span>${run.failed ?? 0}</span></div>
+          <div class="detail-item">المدة: <span>${fmtDuration(run.duration)}</span></div>
+          ${tab === 'w1' ? `<div class="detail-item">رقم الصفحة: <span>${run.page}</span></div>` : `<div class="detail-item">Stale Found: <span>${run.staleFound ?? 0}</span></div>`}
+        </div>
+        ${hasErrors ? `
+          <div style="font-size:11px;color:var(--accent);font-weight:600;margin-bottom:6px">أخطاء (${run.errors.length}):</div>
+          <div class="error-list">
+            ${run.errors.map(e => `<div class="error-row">✗ ${e.order} — ${e.error}</div>`).join('')}
+          </div>
+        ` : '<div style="font-size:12px;color:var(--green)">✓ بدون أخطاء</div>'}
+      </div>
+    `;
+
+    div.addEventListener('click', () => {
+      const detail = document.getElementById(`detail_${idx}`);
+      const isOpen = detail.classList.contains('open');
+      detail.classList.toggle('open', !isOpen);
+      div.classList.toggle('expanded', !isOpen);
+    });
+
+    el.appendChild(div);
+  });
+}
+
+// ── Init ──────────────────────────────────────────────────────────────────────
+document.getElementById('btnFetch').addEventListener('click', fetchData);
+
+const savedUrl = localStorage.getItem('bosta_dashboard_worker_url');
+if (savedUrl) document.getElementById('workerUrl').value = savedUrl;
+document.getElementById('workerUrl').addEventListener('input', e => {
+  localStorage.setItem('bosta_dashboard_worker_url', e.target.value.trim());
+});
+</script>
+</body>
+</html>
