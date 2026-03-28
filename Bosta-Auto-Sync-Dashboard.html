@@ -290,13 +290,29 @@ function renderRuns(tab) {
 
   el.innerHTML = '';
   runs.forEach((run, idx) => {
-    const hasErrors  = run.errors?.length > 0;
+    const isSkipped  = run.skipped === true;
+    const hasErrors  = !isSkipped && run.errors?.length > 0;
     const div        = document.createElement('div');
-    div.className    = `run-item ${hasErrors ? 'has-errors' : ''}`;
+    div.className    = `run-item ${hasErrors ? 'has-errors' : ''} ${isSkipped ? 'skipped-run' : ''}`;
     div.dataset.idx  = idx;
 
+    if (isSkipped) {
+      div.style.opacity = '0.5';
+      div.innerHTML = `
+        <div class="run-header">
+          <span class="run-time">${fmtDate(run.time)}</span>
+          <div class="run-chips">
+            <span class="chip chip-gray">⏸ بريك</span>
+            <span class="chip chip-gray">حتى: ${fmtDate(run.restUntil)}</span>
+          </div>
+        </div>
+      `;
+      el.appendChild(div);
+      return;
+    }
+
     const pageInfo = tab === 'w1'
-      ? `<span class="chip chip-blue">صفحة ${run.page}${run.resetPage ? ' ↺' : ''}</span>`
+      ? `<span class="chip chip-blue">صفحة ${run.page}${run.resetPage ? ' ↺ بريك' : ''}</span>`
       : `<span class="chip chip-yellow">cutoff: ${run.cutoff?.split('T')[0] || '—'}</span>${run.resetCursor ? '<span class="chip chip-gray">↺ reset</span>' : ''}`;
 
     const fromBosta = tab === 'w1'
@@ -311,6 +327,7 @@ function renderRuns(tab) {
           ${fromBosta}
           <span class="chip chip-green">✓ ${run.succeeded ?? 0}</span>
           ${run.failed > 0 ? `<span class="chip chip-red">✗ ${run.failed}</span>` : ''}
+          ${run.restUntil ? `<span class="chip chip-yellow">بريك حتى: ${fmtDate(run.restUntil)}</span>` : ''}
           <span class="chip chip-gray">${fmtDuration(run.duration)}</span>
         </div>
       </div>
@@ -322,6 +339,7 @@ function renderRuns(tab) {
           <div class="detail-item">فشل: <span>${run.failed ?? 0}</span></div>
           <div class="detail-item">المدة: <span>${fmtDuration(run.duration)}</span></div>
           ${tab === 'w1' ? `<div class="detail-item">رقم الصفحة: <span>${run.page}</span></div>` : `<div class="detail-item">Stale Found: <span>${run.staleFound ?? 0}</span></div>`}
+          ${run.restUntil ? `<div class="detail-item">بريك حتى: <span>${fmtDate(run.restUntil)}</span></div>` : ''}
         </div>
         ${hasErrors ? `
           <div style="font-size:11px;color:var(--accent);font-weight:600;margin-bottom:6px">أخطاء (${run.errors.length}):</div>
