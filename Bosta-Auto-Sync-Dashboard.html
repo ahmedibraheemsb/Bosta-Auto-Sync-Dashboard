@@ -52,7 +52,7 @@
   .btn-green:not(:disabled):hover { opacity: .85; }
   .btn-sm { padding: 5px 12px; font-size: 12px; }
 
-  .stats-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; }
+  .stats-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 12px; }
   .stat-card { background: var(--bg); border: 1px solid var(--border); border-radius: 7px; padding: 14px 16px; }
   .stat-label { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; margin-bottom: 6px; }
   .stat-value { font-family: var(--mono); font-size: 22px; font-weight: 500; }
@@ -60,6 +60,7 @@
   .stat-value.red    { color: var(--accent); }
   .stat-value.yellow { color: var(--yellow); }
   .stat-value.blue   { color: var(--blue); }
+  .stat-value.muted  { color: var(--muted); }
 
   .tabs { display: flex; gap: 4px; }
   .tab { padding: 7px 16px; border-radius: 6px; font-size: 13px; font-weight: 500; cursor: pointer; border: 1px solid var(--border); background: var(--bg); color: var(--muted); transition: all .12s; }
@@ -227,15 +228,23 @@ function renderStats() {
 function renderWorkerStats(id, run, type) {
   const el = document.getElementById(id);
   if (!run) { el.innerHTML = '<div class="empty">لا يوجد runs بعد</div>'; return; }
-  const extra = type === 'active'
-    ? `<div class="stat-card"><div class="stat-label">من بوسطة</div><div class="stat-value blue">${n(run.totalFromBosta)}</div></div>`
-    : `<div class="stat-card"><div class="stat-label">Stale Found</div><div class="stat-value yellow">${n(run.staleFound)}</div></div>`;
-  el.innerHTML = `
-    ${extra}
-    <div class="stat-card"><div class="stat-label">نجح</div><div class="stat-value green">${n(run.succeeded)}</div></div>
-    <div class="stat-card"><div class="stat-label">فشل</div><div class="stat-value ${run.failed > 0 ? 'red' : ''}">${n(run.failed)}</div></div>
-    <div class="stat-card"><div class="stat-label">المدة</div><div class="stat-value">${fmtDuration(run.duration)}</div></div>
-  `;
+
+  if (type === 'active') {
+    el.innerHTML = `
+      <div class="stat-card"><div class="stat-label">من بوسطة</div><div class="stat-value blue">${n(run.totalFromBosta)}</div></div>
+      <div class="stat-card"><div class="stat-label">نجح</div><div class="stat-value green">${n(run.succeeded)}</div></div>
+      <div class="stat-card"><div class="stat-label">فشل</div><div class="stat-value ${run.failed > 0 ? 'red' : ''}">${n(run.failed)}</div></div>
+      <div class="stat-card"><div class="stat-label">المدة</div><div class="stat-value">${fmtDuration(run.duration)}</div></div>
+    `;
+  } else {
+    el.innerHTML = `
+      <div class="stat-card"><div class="stat-label">Stale Found</div><div class="stat-value yellow">${n(run.staleFound)}</div></div>
+      <div class="stat-card"><div class="stat-label">نجح</div><div class="stat-value green">${n(run.succeeded)}</div></div>
+      <div class="stat-card"><div class="stat-label">تخطّي</div><div class="stat-value muted">${n(run.skipped)}</div></div>
+      <div class="stat-card"><div class="stat-label">فشل</div><div class="stat-value ${run.failed > 0 ? 'red' : ''}">${n(run.failed)}</div></div>
+      <div class="stat-card"><div class="stat-label">المدة</div><div class="stat-value">${fmtDuration(run.duration)}</div></div>
+    `;
+  }
 }
 
 // ── Runs ──────────────────────────────────────────────────────────────────────
@@ -259,23 +268,32 @@ function renderRuns(tab) {
     const div       = document.createElement('div');
     div.className   = `run-item ${hasErrors ? 'has-errors' : ''}`;
 
-    // Page / cutoff chip
-    const infoChip = tab === 'w1'
-      ? `<span class="chip chip-blue">صفحة ${run.page}${run.resetPage ? ' ↺ بريك' : ''}</span>`
-      : `<span class="chip chip-yellow">stale: ${run.staleDays ?? 1}d</span>${run.cycleComplete ? '<span class="chip chip-gray">↺ بريك</span>' : ''}`;
+    // Chips differ by worker type
+    let infoChip, fromChip, skippedChip = '';
 
-    const fromChip = tab === 'w1'
-      ? `<span class="chip chip-blue">بوسطة: ${n(run.totalFromBosta)}</span>`
-      : `<span class="chip chip-yellow">stale: ${n(run.staleFound)}</span>`;
+    if (tab === 'w1') {
+      infoChip = `<span class="chip chip-blue">صفحة ${run.page}${run.resetPage ? ' ↺ بريك' : ''}</span>`;
+      fromChip = `<span class="chip chip-blue">بوسطة: ${n(run.totalFromBosta)}</span>`;
+    } else {
+      infoChip = `<span class="chip chip-yellow">stale: ${n(run.staleFound)}</span>`;
+      fromChip = `<span class="chip chip-yellow">stale: ${run.staleDays ?? 1}d</span>`;
+      if (run.skipped > 0) {
+        skippedChip = `<span class="chip chip-gray">⏭ ${n(run.skipped)}</span>`;
+      }
+      if (run.cycleComplete) {
+        infoChip += '<span class="chip chip-gray">↺ بريك</span>';
+      }
+    }
 
     div.innerHTML = `
       <div class="run-header">
         <input type="checkbox" class="run-checkbox" data-idx="${idx}" />
         <span class="run-time">${fmtDate(run.time)}</span>
         <div class="run-chips">
-          ${infoChip}
           ${fromChip}
+          ${infoChip}
           <span class="chip chip-green">✓ ${n(run.succeeded)}</span>
+          ${skippedChip}
           ${run.failed > 0 ? `<span class="chip chip-red">✗ ${n(run.failed)}</span>` : ''}
           ${run.restUntil && run.cycleComplete ? `<span class="chip chip-yellow">حتى: ${fmtDate(run.restUntil)}</span>` : ''}
           <span class="chip chip-gray">${fmtDuration(run.duration)}</span>
@@ -286,9 +304,15 @@ function renderRuns(tab) {
           <div class="detail-item">الوقت: <span>${fmtDate(run.time)}</span></div>
           <div class="detail-item">المعالجة: <span>${n(run.processed)}</span></div>
           <div class="detail-item">نجح: <span>${n(run.succeeded)}</span></div>
+          ${tab === 'w2' ? `<div class="detail-item">تخطّي: <span>${n(run.skipped)}</span></div>` : ''}
           <div class="detail-item">فشل: <span>${n(run.failed)}</span></div>
           <div class="detail-item">المدة: <span>${fmtDuration(run.duration)}</span></div>
-          ${tab === 'w1' ? `<div class="detail-item">صفحة: <span>${(run.page||0).toLocaleString('en-US')}</span></div>` : `<div class="detail-item">Stale Days: <span>${run.staleDays ?? 1}</span></div><div class="detail-item">Stale Found: <span>${n(run.staleFound)}</span></div>`}
+          ${tab === 'w1'
+            ? `<div class="detail-item">صفحة: <span>${(run.page||0).toLocaleString('en-US')}</span></div>`
+            : `<div class="detail-item">Stale Days: <span>${run.staleDays ?? 1}</span></div>
+               <div class="detail-item">Stale Found: <span>${n(run.staleFound)}</span></div>
+               ${run.cursor ? `<div class="detail-item">Cursor: <span>${run.cursor === 'start' ? 'بداية' : '...' + run.cursor.slice(-8)}</span></div>` : ''}`
+          }
         </div>
         ${run.succeededOrders?.length ? `
           <div class="orders-section">
@@ -348,23 +372,30 @@ document.getElementById('btnExport').addEventListener('click', () => {
   const runs = allData[activeTab];
   const rows = [];
 
-  rows.push(['الوقت', 'Worker', 'نجح', 'فشل', 'المدة (ms)',
-    activeTab === 'w1' ? 'صفحة' : 'Stale Found',
-    'الأوردرات الناجحة', 'الأخطاء']);
+  if (activeTab === 'w1') {
+    rows.push(['الوقت', 'Worker', 'نجح', 'فشل', 'المدة (ms)', 'صفحة', 'الأوردرات الناجحة', 'الأخطاء']);
+  } else {
+    rows.push(['الوقت', 'Worker', 'Stale Found', 'نجح', 'تخطّي', 'فشل', 'المدة (ms)', 'الأوردرات الناجحة', 'الأخطاء']);
+  }
 
   [...selectedRuns].sort((a,b) => a-b).forEach(idx => {
     const r = runs[idx];
     if (!r) return;
-    rows.push([
-      fmtDate(r.time),
-      r.worker,
-      r.succeeded ?? 0,
-      r.failed ?? 0,
-      r.duration ?? 0,
-      activeTab === 'w1' ? (r.page ?? '') : (r.staleFound ?? ''),
-      (r.succeededOrders || []).join(', '),
-      (r.errors || []).map(e => `${e.order}: ${e.error}`).join(' | '),
-    ]);
+    if (activeTab === 'w1') {
+      rows.push([
+        fmtDate(r.time), r.worker, r.succeeded ?? 0, r.failed ?? 0,
+        r.duration ?? 0, r.page ?? '',
+        (r.succeededOrders || []).join(', '),
+        (r.errors || []).map(e => `${e.order}: ${e.error}`).join(' | '),
+      ]);
+    } else {
+      rows.push([
+        fmtDate(r.time), r.worker, r.staleFound ?? 0, r.succeeded ?? 0,
+        r.skipped ?? 0, r.failed ?? 0, r.duration ?? 0,
+        (r.succeededOrders || []).join(', '),
+        (r.errors || []).map(e => `${e.order}: ${e.error}`).join(' | '),
+      ]);
+    }
   });
 
   // Build CSV (Excel-compatible UTF-8 BOM)
